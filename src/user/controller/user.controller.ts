@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { catchError, map, Observable, of } from 'rxjs';
 import { hasRole } from 'src/auth/decorators/roles.decorator';
@@ -60,6 +60,7 @@ export class UserController {
         return this.userservice.updateRole(+id, user)
     }
 
+    @UseGuards(jwtAuthGuard)
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
@@ -71,8 +72,13 @@ export class UserController {
             }
         })
     }))
-    uploadFile(@UploadedFile() file): Observable<object> {
-        return of({ imagePath: file.path })
+    uploadFile(@UploadedFile() file, @Request() req): Observable<object> {
+        const user = req.user.user
+        console.log(user)
+        return this.userservice.updateOne(user.id, { profileImage: file.filename }).pipe(
+            map((user: User) => ({ profileImage: user.profileImage }))
+        )
+        // return of({ imagePath: file.filename })  
     }
 }
 

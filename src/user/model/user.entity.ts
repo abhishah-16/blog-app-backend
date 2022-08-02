@@ -26,8 +26,12 @@ export class UserEntity {
     @Column({ type: 'enum', enum: userRole, default: userRole.USER })
     role: userRole
 
+    @Column({nullable:true})
+    profileImage:string
+
     @BeforeInsert()
     emailtolowercase() {
         this.email = this.email.toLowerCase()
     }
+
 }
