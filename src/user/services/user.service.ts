@@ -15,7 +15,6 @@ export class UserService {
     ) { }
 
     create(user: User): Observable<User> {
-        // return from(this.userRepository.save(user))
         return this.authservice.hashpassword(user.password).pipe(
             switchMap((_password: string) => {
                 const newuser = new UserEntity()
@@ -23,6 +22,7 @@ export class UserService {
                 newuser.username = user.username
                 newuser.email = user.email
                 newuser.password = _password
+                newuser.role = user.role
                 return from(this.userRepository.save(newuser)).pipe(
                     map((user: User) => {
                         const { password, ...result } = user
@@ -41,7 +41,7 @@ export class UserService {
                     return this.authservice.generateToken(user).pipe(
                         map((jwt: string) => jwt)
                     )
-                }else {
+                } else {
                     return 'incorrect username or password'
                 }
             })
@@ -99,10 +99,3 @@ export class UserService {
     }
 }
 
-// .pipe(
-    //                 map((match) => {
-    //                     if (match) {
-    //                         const {password,...result} = user
-    //                         return result
-    //                     }
-    //                 )
