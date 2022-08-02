@@ -97,5 +97,9 @@ export class UserService {
     updateOne(id: number, user: User): Observable<any> {
         return from(this.userRepository.update(id, user))
     }
+
+    updateRole(id: number, user: User): Observable<any> {
+        return from(this.userRepository.update(id,user))
+    }
 }
 
