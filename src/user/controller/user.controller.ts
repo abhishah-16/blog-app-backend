@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { catchError, map, Observable, of } from 'rxjs';
 import { hasRole } from 'src/auth/decorators/roles.decorator';
 import { jwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -6,6 +7,8 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { userRole } from '../model/user.entity';
 import { User } from '../model/user.interface';
 import { UserService } from '../services/user.service';
+import { diskStorage } from "multer"
+import { v4 as uuid } from "uuid"
 
 @Controller('user')
 export class UserController {
@@ -56,4 +59,21 @@ export class UserController {
     updateRole(@Param('id') id: string, @Body() user: User): Observable<User> {
         return this.userservice.updateRole(+id, user)
     }
+
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file', {
+        storage: diskStorage({
+            destination: './uploads/profile',
+            filename: (req, file, cb) => {
+                const filename: string = (file.originalname) + uuid()
+                console.log(filename)
+                cb(null, `${filename}`)
+            }
+        })
+    }))
+    uploadFile(@UploadedFile() file): Observable<object> {
+        return of({ imagePath: file.path })
+    }
 }
+
+
