@@ -1,5 +1,5 @@
 import { UserEntity } from "src/user/model/user.entity";
-import { BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('blog')
 export class BlogEntryEntity {
@@ -25,6 +25,12 @@ export class BlogEntryEntity {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date
 
+    
+    @BeforeUpdate()
+    updatetimestamp() {
+        this.updatedAt = new Date
+    }
+
     @Column({ default: 0 })
     likes: number
 
@@ -37,12 +43,8 @@ export class BlogEntryEntity {
     @Column({ default: false })
     isPublished: boolean
 
-    @ManyToOne(type => UserEntity, user => user.blog)
-    author: UserEntity
+    @ManyToOne(() => UserEntity, (author) => author.blog)
+    authorid: UserEntity
 
-    @BeforeUpdate()
-    updatetimestamp() {
-        this.updatedAt = new Date
-    }
 
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, Observable, of, switchMap } from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 import { AuthService } from 'src/auth/services/auth.service';
 import { User } from 'src/user/model/user.interface';
 import { Repository } from 'typeorm';
@@ -24,6 +24,7 @@ export class BlogService {
         return this.generateSlug(blog.title).pipe(
             switchMap((slug: string) => {
                 blog.slug = slug
+                console.log(blog);
                 return from(this.blogRepository.save(blog))
             })
         )
@@ -34,6 +35,19 @@ export class BlogService {
     }
 
     findAll(): Observable<Blog[]> {
-        return from(this.blogRepository.find({ relations: ['author'] }))
+        return from(this.blogRepository.find({
+            // relations: ['author'],
+        }))
     }
+
+
+    findByUser(userid: number): Observable<Blog[]> {
+        return from(this.blogRepository.find({
+            where: {
+                   id: userid
+            },
+            // relations: ['author']
+        })).pipe(map((blogEntries: Blog[]) => blogEntries))
+    }
+
 }
