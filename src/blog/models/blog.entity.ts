@@ -25,24 +25,24 @@ export class BlogEntryEntity {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date
 
+    @Column({ default: 0 })
+    likes: number
+
+    @Column({ nullable: true })
+    headerImage: string
+
+    @Column({ nullable: true })
+    publishedDate: Date
+
+    @Column({ default: false })
+    isPublished: boolean
+
+    @ManyToOne(type => UserEntity, user => user.password)
+    author: UserEntity
+
     @BeforeUpdate()
     updatetimestamp() {
         this.updatedAt = new Date
     }
-
-    @Column({ default: 0 })
-    likes: number
-
-    @Column()
-    headerImage: string
-
-    @Column()
-    publishedDate: Date
-
-    @Column()
-    isPublished: boolean
-
-    @ManyToOne(type => UserEntity,user => user.password)
-    author:UserEntity
 
 }
