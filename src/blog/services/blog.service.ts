@@ -32,4 +32,8 @@ export class BlogService {
     generateSlug(title: string): Observable<string> {
         return of(slugify(title))
     }
+
+    findAll(): Observable<Blog[]> {
+        return from(this.blogRepository.find({ relations: ['author'] }))
+    }
 }

@@ -37,7 +37,7 @@ export class BlogEntryEntity {
     @Column({ default: false })
     isPublished: boolean
 
-    @ManyToOne(type => UserEntity, user => user.password)
+    @ManyToOne(type => UserEntity, user => user.blog)
     author: UserEntity
 
     @BeforeUpdate()
