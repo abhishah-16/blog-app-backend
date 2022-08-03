@@ -34,7 +34,7 @@ export class UserController {
     }
 
     @Get(':id')
-    findOne(@Param() param) {
+    findOne(@Param() param): Observable<User> {
         return this.userservice.findOne(param.id)
     }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request, Get, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { jwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Blog } from '../models/blog.interface';
@@ -16,4 +16,15 @@ export class BlogController {
         const user = req.user.user
         return this.blogservice.create(user, blog)
     }
+
+    @UseGuards(jwtAuthGuard)
+    @Get()
+    findAll(@Query('userid') userid: any): Observable<Blog[]> {
+        if (userid === null) {
+            return this.blogservice.findAll()
+        } else {
+            return this.blogservice.findByUser(userid)
+        }
+    }
+
 }

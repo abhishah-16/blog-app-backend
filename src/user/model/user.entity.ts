@@ -1,5 +1,5 @@
 import { BlogEntryEntity } from "src/blog/models/blog.entity";
-import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 export enum userRole {
     ADMIN = 'Admin',
     EDITOR = 'Editor',
@@ -30,7 +30,7 @@ export class UserEntity {
     @Column({ nullable: true })
     profileImage: string
 
-    @OneToMany(type => BlogEntryEntity, blog => blog.author)
+    @OneToMany(() => BlogEntryEntity, (blog) => blog.authorid)
     blog: BlogEntryEntity[]
 
     @BeforeInsert()

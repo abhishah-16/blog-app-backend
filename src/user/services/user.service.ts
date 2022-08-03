@@ -87,7 +87,7 @@ export class UserService {
     }
 
     findAll(): Observable<User[]> {
-        return from(this.userRepository.find())
+        return from(this.userRepository.find({relations:['blog']}))
     }
 
     deleteOne(id: number): Observable<any> {
