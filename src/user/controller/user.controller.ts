@@ -10,6 +10,7 @@ import { UserService } from '../services/user.service';
 import { diskStorage } from "multer"
 import { v4 as uuid } from "uuid"
 import { join } from 'path';
+import { IsUser } from 'src/auth/guards/isuser.guard';
 
 @Controller('user')
 export class UserController {
@@ -49,6 +50,7 @@ export class UserController {
         return this.userservice.deleteOne(+id)
     }
 
+    @UseGuards(jwtAuthGuard, IsUser)
     @Put(':id')
     updateone(@Param('id') id: string, @Body() user: User) {
         return this.userservice.updateOne(+id, user)
