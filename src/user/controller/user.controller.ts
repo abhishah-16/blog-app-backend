@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { catchError, map, Observable, of } from 'rxjs';
 import { hasRole } from 'src/auth/decorators/roles.decorator';
@@ -9,6 +9,7 @@ import { User } from '../model/user.interface';
 import { UserService } from '../services/user.service';
 import { diskStorage } from "multer"
 import { v4 as uuid } from "uuid"
+import { join } from 'path';
 
 @Controller('user')
 export class UserController {
@@ -66,19 +67,21 @@ export class UserController {
         storage: diskStorage({
             destination: './uploads/profile',
             filename: (req, file, cb) => {
-                const filename: string = (file.originalname) + uuid()
-                console.log(filename)
+                const filename: string = uuid() + (file.originalname)
                 cb(null, `${filename}`)
             }
         })
     }))
     uploadFile(@UploadedFile() file, @Request() req): Observable<object> {
         const user = req.user.user
-        console.log(user)
         return this.userservice.updateOne(user.id, { profileImage: file.filename }).pipe(
             map((user: User) => ({ profileImage: user.profileImage }))
         )
-        // return of({ imagePath: file.filename })  
+    }
+
+    @Get('profile-image/:imagename')
+    findProfileImage(@Param('imagename') imagename, @Res() res): Observable<object> {
+        return of(res.sendFile(join(process.cwd(), 'uploads/profile/' + imagename)))
     }
 }
 
