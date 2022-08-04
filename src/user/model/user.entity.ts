@@ -30,14 +30,11 @@ export class UserEntity {
     @Column({ nullable: true })
     profileImage: string
 
-    @OneToMany(() => BlogEntryEntity, (blog) => blog.authorid)
+    @OneToMany(() => BlogEntryEntity, (blog) => blog.author)
     blog: BlogEntryEntity[]
 
     @BeforeInsert()
     emailtolowercase() {
         this.email = this.email.toLowerCase()
     }
-
-
-
 }

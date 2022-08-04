@@ -1,5 +1,5 @@
 import { UserEntity } from "src/user/model/user.entity";
-import { BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('blog')
 export class BlogEntryEntity {
@@ -43,8 +43,7 @@ export class BlogEntryEntity {
     @Column({ default: false })
     isPublished: boolean
 
-    @ManyToOne(() => UserEntity, (author) => author.blog)
-    authorid: UserEntity
-
+    @ManyToOne(type => UserEntity, (author) => author.blog)
+    author: UserEntity
 
 }
