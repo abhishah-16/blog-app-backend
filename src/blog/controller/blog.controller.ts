@@ -20,6 +20,7 @@ export class BlogController {
     @UseGuards(jwtAuthGuard)
     @Get()
     findAll(@Query('userid') userid: any): Observable<Blog[]> {
+        console.log(userid)
         if (userid === null) {
             return this.blogservice.findAll()
         } else {

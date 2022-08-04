@@ -21,10 +21,10 @@ export class BlogService {
 
     create(user: User, blog: Blog): Observable<Blog> {
         blog.author = user
+        console.log(typeof(blog.author));
         return this.generateSlug(blog.title).pipe(
             switchMap((slug: string) => {
                 blog.slug = slug
-                console.log(blog);
                 return from(this.blogRepository.save(blog))
             })
         )
@@ -36,17 +36,18 @@ export class BlogService {
 
     findAll(): Observable<Blog[]> {
         return from(this.blogRepository.find({
-            // relations: ['author'],
+            relations: ['author'],
         }))
     }
 
 
-    findByUser(userid: number): Observable<Blog[]> {
+    findByUser(userid: any): Observable<Blog[]> {
         return from(this.blogRepository.find({
+            
             where: {
-                   id: userid
+                   author: userid
             },
-            // relations: ['author']
+            relations: ['author']
         })).pipe(map((blogEntries: Blog[]) => blogEntries))
     }
 
